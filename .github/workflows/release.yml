@@ -87,14 +87,39 @@ jobs:
           cp release-build/module.json ./module.json
           sha256sum quickdice.zip > quickdice.zip.sha256
 
+      - name: Build release notes
+        id: notes
+        env:
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          BODY=$(git tag -l --format='%(contents:body)' "$TAG")
+          if [[ -z "$BODY" ]]; then
+            BODY=$(git log -1 --format='%b' "$TAG")
+          fi
+          if [[ -n "$BODY" ]]; then
+            {
+              echo "body<<GH_RELEASE_EOF"
+              echo "$BODY"
+              printf '\n**Full Changelog**: '
+              echo "https://github.com/$GITHUB_REPOSITORY/compare/$(git describe --tags --abbrev=0 "${TAG}^")...${TAG}"
+              echo "GH_RELEASE_EOF"
+            } >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Publish GitHub release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.release.outputs.tag }}
           DRAFT: ${{ github.event_name == 'workflow_dispatch' && inputs.draft || false }}
           PRERELEASE: ${{ github.event_name == 'workflow_dispatch' && inputs.prerelease || false }}
+          NOTES: ${{ steps.notes.outputs.body }}
         run: |
-          FLAGS=(--generate-notes --verify-tag)
+          FLAGS=(--verify-tag)
+          if [[ -n "$NOTES" ]]; then
+            FLAGS+=(--notes "$NOTES")
+          else
+            FLAGS+=(--generate-notes)
+          fi
           [[ "$DRAFT" == "true" ]] && FLAGS+=(--draft)
           [[ "$PRERELEASE" == "true" ]] && FLAGS+=(--prerelease)
           gh release create "$TAG" "${FLAGS[@]}" \
