@@ -21,10 +21,8 @@ async function submitDiceCreator(_event, _form, formData) {
 export class DiceCreator extends HandlebarsApplicationMixin(ApplicationV2) {
 	constructor(object, options = {}) {
 		super(options);
-		const { dice, diceRows, form, settings } = object;
-		this.object = { dice, diceRows, settings };
-		this.parent = form;
-		Hooks.once("closeDiceRowSettings", () => this.close());
+		this.object = object;
+		this.parent = object.form;
 	}
 
 	static DEFAULT_OPTIONS = {
@@ -59,7 +57,6 @@ export class DiceCreator extends HandlebarsApplicationMixin(ApplicationV2) {
 		const label = dice?.key ? "SETTINGS.Save" : "QUICK_DICE.DiceCreator.CreateDice";
 		return {
 			dice,
-			diceRows: this.object.diceRows,
 			value: dice?.row ?? rowIndex,
 			maxRows: rowIndex,
 			settings,

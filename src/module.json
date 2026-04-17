@@ -9,14 +9,13 @@
 		}
 	],
 	"url": "https://github.com/DMZimo/fvtt-quickdice",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"compatibility": {
 		"minimum": "14",
 		"verified": "14"
 	},
 	"esmodules": ["module/quickdice.js"],
 	"styles": ["styles/quickdice.css"],
-	"packs": [],
 	"languages": [
 		{
 			"lang": "en",

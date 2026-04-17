@@ -16,9 +16,9 @@
 					value="{{value}}"
 					min="1"
 					max="{{maxRows}}"
-					steps="1"
+					step="1"
 					required
-					{{ifThen (eq value maxRows) "readonly" ""}}
+					{{ifThen (eq value maxRows) "readonly"}}
 				/>
 			</div>
 			<p class="hint">{{localize "QUICK_DICE.DiceCreator.Row.hint"}}</p>
@@ -57,14 +57,12 @@
 	{{#if dice.key}}
 	<fieldset>
 		<legend>{{localize "QUICK_DICE.DiceCreator.Preview"}}</legend>
-		<div class="quick-dice" style="pointer-events: none;">
-			<div class="quick-dice__buttons flexrow" style="height: 30px;">
+		<div class="quick-dice quick-dice--preview">
+			<div class="quick-dice__buttons flexrow">
 				{{> "modules/quickdice/templates/partials/tray-button.hbs"
 					data=dice
 					key=dice.key
-					buttonStyle="width: 40px; position: relative;"
-					diceStyle="height: 100%; aspect-ratio: 1/1;"
-					labelStyle="padding-right: 0.25rem;"
+					buttonStyle="width: 40px;"
 				}}
 			</div>
 		</div>

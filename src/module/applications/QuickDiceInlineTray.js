@@ -10,7 +10,7 @@ export class QuickDiceInlineTray extends QuickDiceTrayApplication {
 	};
 
 	_canRender(_options) {
-		if (!document.getElementById("chat-message")) return false;
+		return !!document.getElementById("chat-message");
 	}
 
 	_insertElement(element) {
@@ -20,6 +20,7 @@ export class QuickDiceInlineTray extends QuickDiceTrayApplication {
 		const existing = document.getElementById(element.id);
 		if (existing && existing !== element) existing.remove();
 		chatInput.insertAdjacentElement("afterend", element);
+		element.style.pointerEvents = "all";
 	}
 
 	reposition() {

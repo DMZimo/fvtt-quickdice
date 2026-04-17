@@ -91,17 +91,17 @@ export class DiceRowSettings extends HandlebarsApplicationMixin(ApplicationV2) {
 		};
 	}
 
+	_onChangeInput(event) {
+		super._onChangeInput(event);
+		const input = event.target;
+		if (input.type === "checkbox" && input.closest(".form-group")) {
+			this.settings[input.name] = input.checked;
+			this.render(false);
+		}
+	}
+
 	_onRender(context, options) {
 		super._onRender(context, options);
-		const quickDiceInput = this.element.querySelector("input.quick-dice__input");
-		for (const input of this.element.querySelectorAll(".form-group input")) {
-			input.addEventListener("click", (event) => {
-				const { checked, name } = event.currentTarget;
-				this.settings[name] = checked;
-				this.render(true);
-			});
-		}
-		if (quickDiceInput) quickDiceInput.disabled = true;
 		for (const button of this.element.querySelectorAll(".quick-dice button.quick-dice__button")) {
 			button.addEventListener("click", (event) => {
 				event.preventDefault();

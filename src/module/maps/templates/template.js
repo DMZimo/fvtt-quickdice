@@ -1,64 +1,11 @@
 export default class TemplateDiceMap {
-	_rightClickCommand;
+	static #ROLL_MODE_PATTERN = /\/(?:r|gmr|br|sr)/;
 
-	/** Unmark the KH/KL buttons if a roll is made */
-	removeAdvOnRoll = true;
+	_rightClickCommand;
 
 	/** Shows the KH/KL buttons */
 	showExtraButtons = true;
 
-	/**
-	 * The formula that will be rendered on the KH/KL buttons
-	 * @returns {{}}
-	 *
-	 * @example Making the buttons be +1/-1 for additional logic
-	 * ```js
-	 * return {
-	 *	kh: "+1",
-	 *	kl: "-1"
-	 * };
-	 */
-	get buttonFormulas() {
-		return {
-			kh: "kh",
-			kl: "kl",
-		};
-	}
-
-	/**
-	 * The dice rows that will be shown on the dice tray.
-	 * @property {String} color		Optional RGB or Hex value that colors a dice's background image. If none is preset, it will be white.
-	 * @property {String} img		The path to an image that will be shown on the button. If none is present, the label will be used instead.
-	 * @property {String} label		The label meant to be used when the button doesn't have a proper image, like Fate Dice or multiple dice.
-	 * @property {String} tooltip	Optional tooltip that will be shown instead of the key. Useful for special dice like Genesys system's.
-	 * @returns {[Object]}
-	 *
-	 * @example
-	 * ```js Dice buttons with mixed image/label
-	 * return [{
-	 * 	d6: { img: "icons/dice/d6black.svg" },
-	 *  "4df": { label: "Fate Dice" }
-	 * }];
-	 * ```
-	 *
-	 * @example Dice buttons with just labels
-	 * ```js
-	 * return [{
-	 * 	d6: { label: "1d6" },
-	 *  "2d6": { label: "2d6" }
-	 *  "3d6": { label: "3d6" }
-	 * }];
-	 * ```
-	 *
-	 * @example Dice buttons with tooltips
-	 * ```js
-	 * return [{
-	 * 	da: { tooltip: "Proficiency" },
-	 *  ds: { tooltip: "Setback" }
-	 *  df: { tooltip: "Force" }
-	 * }];
-	 * ```
-	 */
 	get dice() {
 		return [
 			{
@@ -73,28 +20,18 @@ export default class TemplateDiceMap {
 		];
 	}
 
-	/**
-	 * Labels that will be shown on the Keep Highest/Lowest button if they are shown.
-	 */
 	get labels() {
 		return {
-			advantage: "QUICK_DICE.KeepHighest",
-			adv: "KH",
-			disadvantage: "QUICK_DICE.KeepLowest",
-			dis: "KL",
+			advantage: "QUICK_DICE.Advantage",
+			adv: "QUICK_DICE.Adv",
+			disadvantage: "QUICK_DICE.Disadvantage",
+			dis: "QUICK_DICE.Dis",
 		};
 	}
 
 	get rightClickCommand() {
 		this._rightClickCommand ??= game.settings.get("quickdice", "rightClickCommand");
 		return this._rightClickCommand;
-	}
-
-	/**
-	 * List of additional settings to be registered during the i18nInit hook.
-	 */
-	get settings() {
-		return {};
 	}
 
 	get textarea() {
@@ -136,10 +73,6 @@ export default class TemplateDiceMap {
 		return this.parseFormulaState().modifier;
 	}
 
-	focusChatInput() {
-		this.textarea?.focus();
-	}
-
 	/** Strip ProseMirror HTML wrapper from chat input value */
 	_stripHTML(value) {
 		const raw = String(value);
@@ -170,14 +103,14 @@ export default class TemplateDiceMap {
 
 	roll(formula) {
 		if (!formula?.trim()) return;
-		const cleanFormula = formula.replace(/(\/r|\/gmr|\/br|\/sr) /, "");
+		const cleanFormula = formula.replace(TemplateDiceMap.#ROLL_MODE_PATTERN, "").trimStart();
 		const messageMode = game.settings.get("core", "messageMode");
 		Roll.create(cleanFormula).toMessage({}, { messageMode });
 	}
 
 	parseFormulaState(rawFormula = this.getChatFormula()) {
 		const normalized = this._stripHTML(rawFormula).trim();
-		const expression = normalized.replace(/^(\/r|\/gmr|\/br|\/sr)\s*/, "");
+		const expression = normalized.replace(new RegExp(`^${TemplateDiceMap.#ROLL_MODE_PATTERN.source}\\s*`), "");
 		const modifierMatch = expression.match(/([+-]\d+)$/);
 		const modifier = modifierMatch ? Number(modifierMatch[1]) : 0;
 		const diceExpression = modifierMatch ? expression.slice(0, -modifierMatch[1].length).trim() : expression.trim();
@@ -196,11 +129,7 @@ export default class TemplateDiceMap {
 			modifier,
 			diceCounts,
 			ready: expression.trim() !== "",
-			advState: diceExpression.includes("kh")
-				? this.buttonFormulas.kh
-				: diceExpression.includes("kl")
-					? this.buttonFormulas.kl
-					: "none",
+			advState: diceExpression.includes("kh") ? "kh" : diceExpression.includes("kl") ? "kl" : "none",
 		};
 	}
 
@@ -226,7 +155,7 @@ export default class TemplateDiceMap {
 		else if (currentFormula !== "") nextFormula = currentFormula + modifierString;
 		else nextFormula = `${this._getRollMode()} ${modifierString}`;
 
-		if (/(\/r|\/gmr|\/br|\/sr) $/g.test(nextFormula)) nextFormula = "";
+		if (new RegExp(`${TemplateDiceMap.#ROLL_MODE_PATTERN.source} $`).test(nextFormula)) nextFormula = "";
 		this._setChatValue(nextFormula);
 		return this.parseFormulaState(nextFormula);
 	}
@@ -259,10 +188,9 @@ export default class TemplateDiceMap {
 	}
 
 	cycleAdvantage() {
-		const { kh, kl } = this.buttonFormulas;
 		let formula = this.getChatFormula();
 		const currentState = this.parseFormulaState(formula).advState;
-		const nextState = currentState === "none" ? kh : currentState === kh ? kl : "none";
+		const nextState = currentState === "none" ? "kh" : currentState === "kh" ? "kl" : "none";
 
 		if (/\d*d\d+[khl]*/.test(formula)) {
 			if (/d\d+k[hl]/g.test(formula)) {
@@ -285,23 +213,10 @@ export default class TemplateDiceMap {
 		return this.parseFormulaState(formula);
 	}
 
-	/**
-	 * Returns a string with the number of dice to be rolled.
-	 * Generally simple, unless the system demands some complex use.
-	 * @param {String} qty
-	 * @param {String} dice
-	 * @returns {String}
-	 */
 	rawFormula(qty, dice) {
 		return `${qty === "" ? 1 : qty}${dice}`;
 	}
 
-	/**
-	 * Handles clicks on the dice buttons.
-	 * @param {Object} dataset
-	 * @param {String} direction
-	 * @returns
-	 */
 	updateDiceFormula(dataset, direction) {
 		let currFormula = this.getChatFormula();
 
@@ -344,15 +259,17 @@ export default class TemplateDiceMap {
 		} else if (currFormula === "") {
 			currFormula = `${rollPrefix} ${this.rawFormula(qty, dice || dataset.formula)}`;
 		} else {
-			const signal = /(\/r|\/gmr|\/br|\/sr) (?!-)/g.test(currFormula) ? "+" : "";
+			const signal = new RegExp(`${TemplateDiceMap.#ROLL_MODE_PATTERN.source} (?!-)`).test(currFormula)
+				? "+"
+				: "";
 			currFormula = currFormula.replace(
-				/(\/r|\/gmr|\/br|\/sr) /g,
+				new RegExp(`${TemplateDiceMap.#ROLL_MODE_PATTERN.source} `, "g"),
 				`${rollPrefix} ${this.rawFormula(qty, dice || dataset.formula)}${signal}`,
 			);
 		}
 
 		currFormula = currFormula
-			.replace(/(\/r|\/gmr|\/br|\/sr)(( \+)| )/g, `${rollPrefix} `)
+			.replace(new RegExp(`(${TemplateDiceMap.#ROLL_MODE_PATTERN.source})(( \\+)| )`, "g"), `${rollPrefix} `)
 			.replace(/\+{2}/g, "+")
 			.replace(/-{2}/g, "-")
 			.replace(/\+$/g, "");
@@ -360,10 +277,6 @@ export default class TemplateDiceMap {
 		return this.parseFormulaState(currFormula);
 	}
 
-	/**
-	 * Gets the selected roll mode. This is completely cosmetic or for pressing Enter on chat, the rollMode is picked up during Roll#toMessage
-	 * @returns {String}
-	 */
 	_getRollMode() {
 		const mode = game.settings.get("core", "messageMode");
 		switch (mode) {
@@ -378,17 +291,6 @@ export default class TemplateDiceMap {
 		}
 	}
 
-	/**
-	 * Process a formula to apply advantage or disadvantage. Should be used
-	 * within a regex replacer function's callback.
-	 *
-	 * @param {string} count Current dice count in the formula.
-	 * @param {string} dice Current dice in the formula.
-	 * @param {string} khl Current kh/kl in the formula.
-	 * @param {number} countDiff Integer to adjust the dice count by.
-	 * @param {string} newKhl Formula of the button (kh or kl).
-	 * @returns {object} Object with content and count keys.
-	 */
 	updateDiceKeep(count, dice, khl, countDiff, newKhl) {
 		// Start by getting the current number of dice (minimum 1).
 		const keep = Number.isNumeric(count) ? Math.max(Number(count), 1) : 1;
@@ -426,21 +328,9 @@ export default class TemplateDiceMap {
 			result = `${result}${newKhl}`;
 		}
 
-		// Return an object with the updated text and the new count.
 		return {
 			content: result,
 			count: newCount,
-		};
-	}
-}
-
-export class dnd5eDiceMap extends TemplateDiceMap {
-	get labels() {
-		return {
-			advantage: "QUICK_DICE.Advantage",
-			adv: "QUICK_DICE.Adv",
-			disadvantage: "QUICK_DICE.Disadvantage",
-			dis: "QUICK_DICE.Dis",
 		};
 	}
 }

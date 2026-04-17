@@ -11,7 +11,7 @@
 			data-tooltip-direction="UP"/>
 		{{/unless}}
 		{{#if @root.showExtraButtons}}
-		<div class="quick-dice-math" {{#if @root.settings.hideAdv}}hidden{{/if}}>
+		<div class="quick-dice__adv-wrapper" {{#if @root.settings.hideAdv}}hidden{{/if}}>
 			<button
 				type="button"
 				class="quick-dice__ad quick-dice__advantage"
@@ -31,20 +31,20 @@
 	</div>
 	{{/each}}
 	{{#unless @root.settings.compactMode}}
-    <div class="quick-dice__math quick-dice__math__buttons flexrow">
+	<div class="quick-dice__math flexrow">
 		{{#if @root.settings.hideNumberButtons}}
 		<input class="quick-dice__input" name="quick.dice.modifier" type="text" value="0"
 			data-tooltip="{{localize 'QUICK_DICE.ModifierScrollHint'}}"
 			data-tooltip-direction="UP"/>
 		{{else}}
-		<button type="button" class="quick-dice__math quick-dice__math--sub" data-action="adjust-modifier" data-delta="-1"><i class="fas fa-minus"></i></button>
+		<button type="button" class="quick-dice__math--sub" data-action="adjust-modifier" data-delta="-1"><i class="fas fa-minus"></i></button>
 		<input class="quick-dice__input" name="quick.dice.modifier" type="text" value="0"
 			data-tooltip="{{localize 'QUICK_DICE.ModifierScrollHint'}}"
 			data-tooltip-direction="UP"/>
-		<button type="button" class="quick-dice__math quick-dice__math--add" data-action="adjust-modifier" data-delta="1"><i class="fas fa-plus"></i></button>
+		<button type="button" class="quick-dice__math--add" data-action="adjust-modifier" data-delta="1"><i class="fas fa-plus"></i></button>
 		{{/if}}
 		{{#if @root.showExtraButtons}}
-		<div class="quick-dice-math" {{#if @root.settings.hideAdv}}hidden{{/if}}>
+		<div class="quick-dice__adv-wrapper" {{#if @root.settings.hideAdv}}hidden{{/if}}>
 			<button
 				type="button"
 				class="quick-dice__ad quick-dice__advantage"
@@ -60,6 +60,6 @@
 		{{#unless @root.settings.hideRollButton}}
 		<button type="button" class="quick-dice__roll" data-action="roll-formula">{{localize "QUICK_DICE.Roll"}}</button>
 		{{/unless}}
-    </div>
+	</div>
 	{{/unless}}
 </section>

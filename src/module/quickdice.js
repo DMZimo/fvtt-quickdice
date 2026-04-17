@@ -1,8 +1,6 @@
 import { DiceRowSettings } from "./forms/DiceRowSettings.js";
-import Template, { dnd5eDiceMap as dnd5e } from "./maps/templates/template.js";
+import TemplateDiceMap from "./maps/templates/template.js";
 import { QuickDiceTrayManager } from "./QuickDiceTrayManager.js";
-
-const keymaps = { Template, dnd5e };
 
 // Initialize module
 Hooks.once("init", () => {
@@ -43,13 +41,7 @@ Hooks.once("init", () => {
 });
 
 Hooks.once("i18nInit", () => {
-	const newMaps = foundry.utils.deepClone(keymaps);
-
-	Hooks.callAll("quickdice.keymaps", newMaps, newMaps.Template);
-	const supportedSystemMaps = Object.keys(newMaps).join("|");
-	const systemMapsRegex = new RegExp(`^(${supportedSystemMaps})$`);
-	const providerStringMaps = getProviderString(systemMapsRegex) || "Template";
-	CONFIG.QUICKDICE = new newMaps[providerStringMaps]();
+	CONFIG.QUICKDICE = new TemplateDiceMap();
 	new QuickDiceTrayManager(CONFIG.QUICKDICE);
 
 	registerSettings();
@@ -65,7 +57,6 @@ Hooks.once("i18nInit", () => {
 		},
 	});
 	if (game.settings.get("quickdice", "enableQuickDice")) {
-		let wasAtBottom = true;
 		Hooks.on("quickdice.forceRender", () => CONFIG.QUICKDICE.runtime.rerenderApplications());
 		Hooks.once("renderChatLog", () => CONFIG.QUICKDICE.runtime.renderInlineTray());
 		Hooks.on("renderChatLog", (chatlog) => {
@@ -84,11 +75,9 @@ Hooks.once("i18nInit", () => {
 			if (ui.chat.popout?.rendered && !ui.chat.isPopout) return;
 			CONFIG.QUICKDICE.runtime.repositionInlineTray();
 		});
-		Hooks.on("collapseSidebar", (_, wasExpanded) => {
+		Hooks.on("collapseSidebar", () => {
 			if (ui.chat.popout?.rendered && !ui.chat.isPopout) return;
 			CONFIG.QUICKDICE.runtime.repositionInlineTray();
-			if (!wasExpanded && wasAtBottom) ui.chat.scrollBottom();
-			wasAtBottom = ui.chat.isAtBottom;
 		});
 	}
 });
@@ -96,12 +85,6 @@ Hooks.once("i18nInit", () => {
 Hooks.once("ready", () => {
 	if (game.settings.get("quickdice", "autoOpenPopout")) CONFIG.QUICKDICE.runtime.togglePopout();
 });
-
-function getProviderString(regex) {
-	const id = game.system.id;
-	if (regex.test(id)) return id;
-	return "";
-}
 
 Hooks.on("getSceneControlButtons", (controls) => {
 	controls.tokens.tools.quickDice = {
@@ -213,18 +196,4 @@ function registerSettings() {
 			CONFIG.QUICKDICE.runtime?.rerenderApplications();
 		},
 	});
-
-	for (const [key, data] of Object.entries(CONFIG.QUICKDICE.settings)) {
-		game.settings.register(
-			"quickdice",
-			key,
-			foundry.utils.mergeObject(
-				{
-					scope: "world",
-					config: true,
-				},
-				data,
-			),
-		);
-	}
 }

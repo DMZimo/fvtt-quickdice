@@ -4,7 +4,7 @@ function onAddDie(event, target) {
 	event.preventDefault();
 	this.controller.updateDiceFormula(target.dataset, "add");
 	this.manager.syncApplications();
-	this.controller.focusChatInput();
+	this.controller.textarea?.focus();
 }
 
 function onAdjustModifier(event, target) {
@@ -12,24 +12,23 @@ function onAdjustModifier(event, target) {
 	const delta = Number(target.dataset.delta ?? 0);
 	this.controller.adjustModifierValue(delta);
 	this.manager.syncApplications();
-	this.controller.focusChatInput();
+	this.controller.textarea?.focus();
 }
 
 function onCycleAdvantage(event) {
 	event.preventDefault();
 	this.controller.cycleAdvantage();
 	this.manager.syncApplications();
-	this.controller.focusChatInput();
+	this.controller.textarea?.focus();
 }
 
 function onRollFormula(event) {
 	event.preventDefault();
 	const formula = this.controller.getChatFormula();
-	if (!formula.trim()) return;
 	this.controller.roll(formula);
 	this.controller.clearChatFormula();
 	this.manager.syncApplications(this.controller.getEmptyFormulaState());
-	this.controller.focusChatInput();
+	this.controller.textarea?.focus();
 }
 
 export class QuickDiceTrayApplication extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -56,12 +55,11 @@ export class QuickDiceTrayApplication extends HandlebarsApplicationMixin(Applica
 	static PARTS = {
 		tray: {
 			template: "modules/quickdice/templates/tray.hbs",
-			templates: ["modules/quickdice/templates/tray.hbs", "modules/quickdice/templates/partials/tray-button.hbs"],
 		},
 	};
 
 	get trayElement() {
-		return this.element?.querySelector(".quick-dice") ?? this.element;
+		return this.element?.querySelector(".quick-dice");
 	}
 
 	async _prepareContext(_options) {
@@ -77,7 +75,7 @@ export class QuickDiceTrayApplication extends HandlebarsApplicationMixin(Applica
 		for (const button of root.querySelectorAll("button")) {
 			button.addEventListener("pointerdown", (event) => {
 				event.preventDefault();
-				this.controller.focusChatInput();
+				this.controller.textarea?.focus();
 			});
 		}
 

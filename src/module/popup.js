@@ -13,6 +13,7 @@ export class QuickDicePopOut extends QuickDiceTrayApplication {
 			icon: "fas fa-dice-d20",
 			minimizable: true,
 			resizable: true,
+			contentClasses: ["quick-dice-popout-content"],
 		},
 	};
 
@@ -38,10 +39,14 @@ export class QuickDicePopOut extends QuickDiceTrayApplication {
 		}
 	}
 
+	#savePosition = foundry.utils.debounce((left, top) => {
+		game.settings.set("quickdice", "popoutPosition", { left, top });
+	}, 500);
+
 	setPosition(position) {
 		const superPosition = super.setPosition(position);
 		const { left, top } = superPosition;
-		game.settings.set("quickdice", "popoutPosition", { left, top });
+		this.#savePosition(left, top);
 		return superPosition;
 	}
 }
