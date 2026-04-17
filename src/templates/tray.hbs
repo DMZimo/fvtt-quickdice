@@ -1,0 +1,65 @@
+<section class="quick-dice">
+	{{#each dicerows as |dice|}}
+	<div class="quick-dice__buttons flexrow">
+		{{#each dice as |data key|}}
+		{{> "modules/quickdice/templates/partials/tray-button.hbs" data=data key=key}}
+		{{/each}}
+		{{#if (and @root.settings.compactMode @last)}}
+		{{#unless @root.settings.hideNumberInput}}
+		<input class="quick-dice__input" name="quick.dice.modifier" type="text" value="0"
+			data-tooltip="{{localize 'QUICK_DICE.ModifierScrollHint'}}"
+			data-tooltip-direction="UP"/>
+		{{/unless}}
+		{{#if @root.showExtraButtons}}
+		<div class="quick-dice-math" {{#if @root.settings.hideAdv}}hidden{{/if}}>
+			<button
+				type="button"
+				class="quick-dice__ad quick-dice__advantage"
+				data-action="cycle-advantage"
+				data-adv-state="none"
+				data-tooltip="{{localize @root.labels.advantage}}"
+				data-tooltip-direction="UP"
+			>
+				{{localize @root.labels.adv}}
+			</button>
+		</div>
+		{{/if}}
+		{{#unless @root.settings.hideRollButton}}
+		<button type="button" class="quick-dice__roll" data-action="roll-formula">{{localize "QUICK_DICE.Roll"}}</button>
+		{{/unless}}
+		{{/if}}
+	</div>
+	{{/each}}
+	{{#unless @root.settings.compactMode}}
+    <div class="quick-dice__math quick-dice__math__buttons flexrow">
+		{{#if @root.settings.hideNumberButtons}}
+		<input class="quick-dice__input" name="quick.dice.modifier" type="text" value="0"
+			data-tooltip="{{localize 'QUICK_DICE.ModifierScrollHint'}}"
+			data-tooltip-direction="UP"/>
+		{{else}}
+		<button type="button" class="quick-dice__math quick-dice__math--sub" data-action="adjust-modifier" data-delta="-1"><i class="fas fa-minus"></i></button>
+		<input class="quick-dice__input" name="quick.dice.modifier" type="text" value="0"
+			data-tooltip="{{localize 'QUICK_DICE.ModifierScrollHint'}}"
+			data-tooltip-direction="UP"/>
+		<button type="button" class="quick-dice__math quick-dice__math--add" data-action="adjust-modifier" data-delta="1"><i class="fas fa-plus"></i></button>
+		{{/if}}
+		{{#if @root.showExtraButtons}}
+		<div class="quick-dice-math" {{#if @root.settings.hideAdv}}hidden{{/if}}>
+			<button
+				type="button"
+				class="quick-dice__ad quick-dice__advantage"
+				data-action="cycle-advantage"
+				data-adv-state="none"
+				data-tooltip="{{localize @root.labels.advantage}}"
+				data-tooltip-direction="UP"
+			>
+				{{localize @root.labels.adv}}
+			</button>
+		</div>
+		{{/if}}
+		{{#unless @root.settings.hideRollButton}}
+		<button type="button" class="quick-dice__roll" data-action="roll-formula">{{localize "QUICK_DICE.Roll"}}</button>
+		{{/unless}}
+    </div>
+	{{/unless}}
+</section>

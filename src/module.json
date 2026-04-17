@@ -1,0 +1,29 @@
+{
+	"id": "quickdice",
+	"title": "Quick Dice",
+	"description": "A Quick Dice tray based on the original Dice Tray module, tailored specifically for D&D5e.",
+	"authors": [
+		{
+			"name": "DMZimo",
+			"discord": "dmzimo"
+		}
+	],
+	"url": "https://github.com/DMZimo/fvtt-quickdice",
+	"version": "1.0.0",
+	"compatibility": {
+		"minimum": "14",
+		"verified": "14"
+	},
+	"esmodules": ["module/quickdice.js"],
+	"styles": ["styles/quickdice.css"],
+	"packs": [],
+	"languages": [
+		{
+			"lang": "en",
+			"name": "English",
+			"path": "lang/en.json"
+		}
+	],
+	"manifest": "https://github.com/DMZimo/fvtt-quickdice/releases/latest/download/module.json",
+	"download": "https://github.com/DMZimo/fvtt-quickdice/releases/latest/download/quickdice.zip"
+}

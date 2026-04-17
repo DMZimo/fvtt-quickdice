@@ -1,0 +1,95 @@
+{
+	"QUICK_DICE": {
+		"Adv": "Adv",
+		"Advantage": "Advantage",
+		"DiceTray": "Quick Dice",
+		"Dis": "Dis",
+		"Disadvantage": "Disadvantage",
+		"KeepHighest": "Keep Highest",
+		"KeepLowest": "Keep Lowest",
+		"Roll": "Roll",
+		"ModifierScrollHint": "Scroll to adjust modifier",
+		"RightClickRoll": "Right-click: Roll 1",
+		"RightClickDecrease": "Right-click: Remove",
+
+		"Optional": "Optional",
+
+		"DiceCreator": {
+			"CreateDice": "Create Dice",
+			"Formula": {
+				"name": "Formula",
+				"hint": "The formula that will be added to the chat."
+			},
+			"Row": {
+				"name": "Row",
+				"hint": "The row the button will be placed on."
+			},
+			"Image": {
+				"name": "Image"
+			},
+			"Label": {
+				"name": "Label",
+				"hint": "The label shown in case the dice has no image."
+			},
+			"Tooltip": {
+				"name": "Tooltip",
+				"hint": "The tooltip shown when hovering over the button. Defaults to the Formula."
+			},
+			"Color": {
+				"name": "Color",
+				"hint": "The color that fills the image."
+			},
+			"Preview": "Preview"
+		},
+
+		"DiceRows": {
+			"compactMode": {
+				"label": "Compact Mode",
+				"hint": "Disables any additional dice rows and merges the original two rows together."
+			},
+			"hideNumberInput": {
+				"label": "Hide Number Input",
+				"disabledHint": "Enable Compact Mode to use this option."
+			},
+			"hideNumberButtons": {
+				"label": "Hide +/- Buttons",
+				"disabledHint": "Disable Compact Mode to use this option."
+			},
+			"hideRollButton": {
+				"label": "Hide Roll Button"
+			},
+			"Instruction1": "Click any dice button to edit it. Right-Click any dice button to delete it."
+		},
+
+		"KEYBINDINGS": {
+			"popout": {
+				"name": "Toggle Quick Dice Popout"
+			}
+		},
+
+		"SETTINGS": {
+			"DiceCreator": "Dice Creator",
+			"DiceRowSettings": "Dice Rows Configuration",
+			"autoOpenPopout": {
+				"name": "Auto Open Popout",
+				"hint": "Opens the Quick Dice popout automatically on page load."
+			},
+			"enableQuickDice": {
+				"name": "Enable Quick Dice",
+				"hint": "Enable showing a Quick Dice tray below the chat message area. This is a user setting for players that don't want the tray."
+			},
+			"hideAdv": {
+				"name": "Hide Extra Buttons",
+				"hint": "Hides the KH/KL buttons."
+			},
+			"rightClickCommand": {
+				"name": "Right Click Command",
+				"hint": "Sets which behavior right-clicking a dice button should have.",
+				"options": {
+					"decrease": "Default (Decrease Dice)",
+					"roll": "Roll One Dice"
+				}
+			}
+		}
+	}
+}

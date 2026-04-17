@@ -1,0 +1,28 @@
+<button
+	type="button"
+	class="quick-dice__button{{#if buttonClasses}} {{buttonClasses}}{{/if}}"
+	{{#if buttonStyle}}style="{{buttonStyle}}"{{/if}}
+	data-action="add-die"
+	data-formula="{{key}}"
+	data-tooltip="{{#if data.tooltip}}{{data.tooltip}}{{else}}{{key}}{{/if}}{{#if @root.rightClickHint}} | {{@root.rightClickHint}}{{/if}}"
+	data-tooltip-direction="{{#if data.direction}}{{data.direction}}{{else}}UP{{/if}}"
+>
+	<span class="quick-dice__flag quick-dice__flag--{{key}} hide"></span>
+	{{#if data.img}}
+	<div class="dice" style="
+		mask: url({{data.img}}) center 2px/contain no-repeat;
+		-webkit-mask: url({{data.img}}) center 2px/contain no-repeat;
+		{{#if data.color}}background-color: {{data.color}};{{/if}}
+		{{#if diceStyle}}{{diceStyle}}{{/if}}
+	"></div>
+	{{#if data.label}}
+	<span class="dice-label" style="{{#if data.color}}color: {{data.color}};{{/if}}{{#if labelStyle}} {{labelStyle}}{{/if}}">
+		{{{data.label}}}
+	</span>
+	{{/if}}
+	{{else}}
+	<span style="{{#if data.color}}color: {{data.color}};{{/if}}{{#if labelStyle}} {{labelStyle}}{{/if}}">
+		{{{data.label}}}
+	</span>
+	{{/if}}
+</button>

@@ -1,0 +1,52 @@
+<div>
+    <fieldset>
+        <div class="form-group">
+            <label for="compactMode">{{localize "QUICK_DICE.DiceRows.compactMode.label"}}</label>
+            <div class="form-fields">
+                <input id="compactMode" type="checkbox" name="compactMode" {{checked settings.compactMode}}>
+            </div>
+            <p class="hint">{{localize "QUICK_DICE.DiceRows.compactMode.hint"}}</p>
+        </div>
+        <div class="form-group">
+            <label for="hideNumberInput">{{localize "QUICK_DICE.DiceRows.hideNumberInput.label"}}</label>
+            <div class="form-fields">
+                <input id="hideNumberInput" type="checkbox" name="hideNumberInput" {{checked settings.hideNumberInput}} {{disabled (not settings.compactMode)}}>
+            </div>
+            {{#unless settings.compactMode}}
+            <p class="hint">{{localize "QUICK_DICE.DiceRows.hideNumberInput.disabledHint"}}</p>
+            {{/unless}}
+        </div>
+        <div class="form-group">
+            <label for="hideNumberButtons">{{localize "QUICK_DICE.DiceRows.hideNumberButtons.label"}}</label>
+            <div class="form-fields">
+                <input id="hideNumberButtons" type="checkbox" name="hideNumberButtons" {{checked settings.hideNumberButtons}} {{disabled settings.compactMode}}>
+            </div>
+            {{#if settings.compactMode}}
+            <p class="hint">{{localize "QUICK_DICE.DiceRows.hideNumberButtons.disabledHint"}}</p>
+            {{/if}}
+        </div>
+        {{#if showExtraButtons}}
+        <div class="form-group">
+            <label for="hideAdv">{{localize "QUICK_DICE.SETTINGS.hideAdv.name"}}</label>
+            <div class="form-fields">
+                <input id="hideAdv" type="checkbox" name="hideAdv" {{checked settings.hideAdv}}>
+            </div>
+        </div>
+        {{/if}}
+        <div class="form-group">
+            <label for="hideRollButton">{{localize "QUICK_DICE.DiceRows.hideRollButton.label"}}</label>
+            <div class="form-fields">
+                <input id="hideRollButton" type="checkbox" name="hideRollButton" {{checked settings.hideRollButton}}>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>{{localize "Preview"}}</legend>
+        <div>
+            <p class="hint">{{localize "QUICK_DICE.DiceRows.Instruction1"}}</p>
+        </div>
+        <section class="sidebar-preview flexcol">
+            {{>"modules/quickdice/templates/tray.hbs" dicerows=diceRows settings=settings }}
+        </section>
+    </fieldset>
+</div>
